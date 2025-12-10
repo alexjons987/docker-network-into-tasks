@@ -41,16 +41,29 @@ The aim is to understand:
 * How to connect with credentials and networks
 
 ### Objectives
-1. Create your own Docker network
+1. Create your own Docker network:
 2. Start a MySQL container with user, password and database
 3. Expose the MySQL port to the host computer
 4. Connect to the database from localhost
 5. Optional: connect from another container via the network
 
 ### Steps
-1. Create a user-defined network
-2. Start the MySQL container
-3. Check that the database is started
-4. Connect from your computer with any MySQL client or spring-boot
+1. Create a user-defined network: `docker network create mynet`
+2. Start the MySQL container: `docker run -d --name mysql-db --network mynet -e MYSQL_ROOT_PASSWORD=rootpass -e MYSQL_DATABASE=demo_db -e MYSQL_USER=demo_user -e MYSQL_PASSWORD=demo_pass -p 3307:3306 mysql:8.0`
+3. Check that the database is started: `docker ps` and `docker logs -f mysql-db` to follow logs
+4. Connect from your computer with any MySQL client or spring-boot: I chose **MySQL Workbench 8.0**
+* Hostname: `127.0.0.1`
+* Port: `3307`
+* Username: `demo_user`
+* Password: `demo_pass`
 5. Test SQL commands:
+```sql
+USE demo_db;
+CREATE TABLE message (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  text VARCHAR(255)
+);
+INSERT INTO message(text) VALUES ("Hello from MySQL in Docker!");
+SELECT * FROM message;
+```
 6. Bonus: connect from another container in the same network.
